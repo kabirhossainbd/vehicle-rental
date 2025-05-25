@@ -12,4 +12,8 @@ class HomeRepo {
     return apiSource.getData(ShareKey.vehiclesUri);
   }
 
+  Future<Response> getVehicleDetails(String carId) async {
+    return apiSource.getData('${ShareKey.vehiclesUri}/$carId');
+  }
+
 }

@@ -10,7 +10,8 @@ class CustomImage extends StatelessWidget {
   final double width;
   final bool isColor;
   final Widget? errorWidget;
-  const CustomImage({super.key, required this.imageUrl, this.height = 32, this.width=32, this.isColor = false, this.errorWidget});
+  final BoxFit? fit;
+  const CustomImage({super.key, required this.imageUrl, this.height = 32, this.width=32, this.isColor = false, this.errorWidget, this.fit});
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +19,12 @@ class CustomImage extends StatelessWidget {
         AllImages.logo,
         height: height,
         width: width,
-        fit: BoxFit.cover,
+        fit: fit ?? BoxFit.cover,
         color: Theme.of(context).colorScheme.gray_20) : CachedNetworkImage(
       imageUrl: imageUrl,
       height: height,
       width: width,
-      fit: BoxFit.cover,
+      fit: fit ?? BoxFit.cover,
       placeholder: (a, b) => Image.asset(AllImages.logo, color: Theme.of(context).colorScheme.gray_20, fit: BoxFit.cover,),
       errorWidget: (a,b,c) => errorWidget ?? Icon(Icons.error),
     );

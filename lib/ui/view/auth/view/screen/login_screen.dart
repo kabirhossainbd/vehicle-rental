@@ -1,14 +1,14 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vehicle_rental_app/common/data/datasource/remote/network_service.dart';
+import 'package:vehicle_rental_app/helper/ui_helper/dialog_helper.dart';
 import 'package:vehicle_rental_app/routes.dart';
 import 'package:vehicle_rental_app/service/themes/color_scheme.dart';
 import 'package:vehicle_rental_app/ui/component/custom_button.dart';
 import 'package:vehicle_rental_app/ui/component/custom_text_field.dart';
 import 'package:vehicle_rental_app/ui/view/auth/controller/auth_controller.dart';
-import 'package:vehicle_rental_app/ui/view/auth/view/screen/registation_screen.dart';
 import 'package:vehicle_rental_app/util/dimensions.dart';
+import 'package:vehicle_rental_app/util/helper.dart';
 import 'package:vehicle_rental_app/util/images.dart';
 import 'package:vehicle_rental_app/util/styles.dart';
 
@@ -30,8 +30,21 @@ class _LoginScreenState extends State<LoginScreen> {
   int nameMaxLength = 11;
   String text = "";
 
-  bool _isEmailError = false;
-  bool _isPasswordError = false;
+  String _isEmailError = '';
+  String _isPasswordError = '';
+  final NetworkConnectivityObserver _observer = NetworkConnectivityObserver();
+
+  @override
+  void initState() {
+    _observer.checkInternetStatus().then((isInternet){
+      Get.find<AuthController>().setIsNetworkConnected(isInternet);
+    });
+
+    _observer.connectivityStream.listen((event) {
+      Get.find<AuthController>().setIsNetworkConnected(event);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       hintText: 'Email',
                       onChanged: (val){
                         setState(() {
-                          _isEmailError = false;
+                          _isEmailError = '';
                         });
                       },
                       fillColor: Theme.of(context).colorScheme.whiteColor,
@@ -73,9 +86,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     /// for error msg
-                    if(_isEmailError)...[
+                    if(_isEmailError.isNotEmpty)...[
                       const SizedBox(height: 6),
-                      Text('Please enter email',style: poppinsRegular.copyWith(color:  Colors.red,fontSize: Dimensions.fontSizeExtraSmall)),
+                      Text(_isEmailError,style: poppinsRegular.copyWith(color:  Colors.red,fontSize: Dimensions.fontSizeExtraSmall)),
                     ],
 
                     const SizedBox(height: Dimensions.paddingSizeDefault),
@@ -90,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       inputType: TextInputType.text,
                       onChanged: (val){
                         setState(() {
-                          _isPasswordError = false;
+                          _isPasswordError = '';
                         });
                       },
                       isPassword: true,
@@ -98,71 +111,48 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     /// for error msg
-                    if(_isPasswordError)...[
+                    if(_isPasswordError.isNotEmpty)...[
                       const SizedBox(height: 6),
-                      Text('Please enter password',style: poppinsRegular.copyWith(color:  Colors.red,fontSize: Dimensions.fontSizeExtraSmall)),
+                      Text(_isPasswordError,style: poppinsRegular.copyWith(color:  Colors.red,fontSize: Dimensions.fontSizeExtraSmall)),
                     ],
 
                     const SizedBox(height: Dimensions.paddingSizeDefault),
 
 
+                    auth.isLoading ? Center(child: CircularProgressIndicator()) :
                     CustomButton(buttonText: 'LogIn', onTap: (){
                       final email = _userNameController.text;
                       final password = _passWordController.text;
                      if (email.isEmpty) {
                         setState(() {
-                          _isEmailError = true;
+                          _isEmailError = 'Please enter email';
                         });
-                      }else if(password.isEmpty){
+                      }else if (!validateEmail(email)) {
+                       setState(() {
+                         _isEmailError = 'Please enter valid email';
+                       });
+                     }else if(password.isEmpty){
                         setState(() {
-                          _isPasswordError = true;
+                          _isPasswordError = 'Please enter password';
                         });
-                      }else{
-                       Get.offAllNamed(RouterHelper.getMainRoute());
+                      }else if(password.length < 6){
+                       setState(() {
+                         _isPasswordError = 'Password should be 6 character';
+                       });
+                     }else{
+                       auth.loginBody(email, password).then((value){
+                         if(value.isSuccess!){
+                           Get.offAllNamed(RouterHelper.getMainRoute());
+                         }else{
+                           if(!Get.isDialogOpen!){
+                             DialogHelper.showErrorDialog(description: value.message);
+                           }
+                         }
+                       });
                       }
                     }),
 
-                    /*const SizedBox(height: Dimensions.paddingSizeExtraLarge),
-                    GestureDetector(
-                      onTap: ()=> auth.signInWithGoogle(),
-                      child: Container(
-                        height: 48,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                          border: Border.all(color: Theme.of(context).primaryColor)
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Image.asset(AllImages.logo, width: 24, height: 24,),
-                            const SizedBox(width: 6),
-                            Text('Login with Google', style: poppinsRegular.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeLarge),),
-                          ],
-                        ),
-                      ),
-                    ),*/
 
-                    const SizedBox(height: Dimensions.paddingSizeExtraLarge),
-                    // RichText(text: TextSpan(
-                    //   text: "Don't have an account?",
-                    //   style: poppinsRegular.copyWith(
-                    //       fontSize: Dimensions.fontSizeDefault,
-                    //       color: Theme.of(context).colorScheme.crossColor),
-                    //   children: [
-                    //     const TextSpan(text: ' '),
-                    //
-                    //     TextSpan(
-                    //       recognizer: TapGestureRecognizer()
-                    //         ..onTap = () => Navigator.push(context, CupertinoPageRoute(builder: (_) => const RegistrationScreen())),
-                    //       text: 'SignUp',
-                    //       style: poppinsRegular.copyWith(
-                    //           fontSize: Dimensions.fontSizeLarge,
-                    //           color: Theme.of(context).primaryColor),
-                    //     )
-                    //   ]
-                    // )),
                     Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
 
                   ],

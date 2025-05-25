@@ -1,5 +1,4 @@
 import 'package:vehicle_rental_app/service/themes/color_scheme.dart';
-import 'package:vehicle_rental_app/util/dimensions.dart';
 import 'package:vehicle_rental_app/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,18 +14,26 @@ class DialogHelper {
             children: [
               Text(
                 title,
-                style: Get.textTheme.bodyLarge,
+                style: poppinsSemiBold.copyWith(color: Theme.of(Get.context!).colorScheme.textColor, fontSize: 18),
               ),
               Text(
                 description ?? '',
-                style: Get.textTheme.displayMedium,
+                style: poppinsRegular,
               ),
-              ElevatedButton(
-                onPressed: () {
+
+              GestureDetector(
+                onTap: () {
                   if (Get.isDialogOpen!) Get.back();
                 },
-                child: const Text('Okay'),
-              ),
+                child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                        color: Theme.of(Get.context!).primaryColor,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Theme.of(Get.context!).primaryColor)
+                    ),
+                    child: Text('Okay', style: poppinsRegular.copyWith(color: Colors.white))),
+              )
             ],
           ),
         ),
@@ -34,8 +41,6 @@ class DialogHelper {
     );
   }
 
-  //show toast
-  //show snack bar
   //show loading
   static void showLoading([String? message]) {
     Get.dialog(
@@ -91,87 +96,10 @@ class DialogHelper {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))),
       title: RichText(
         text:  TextSpan(text: 'Unable to log in'.tr, style: poppinsMedium.copyWith(
-            fontSize: 20)),
+            fontSize: 20, color: Theme.of(Get.context!).colorScheme.textColor)),
       ),
-      content: Text('An unexpected error occurred.Please try logging in again.'.tr,  style: poppinsRegular.copyWith(color: Colors.grey, fontSize: 16),),
+      content: Text("Due to internet connection you can't login.Please try logging in again.".tr,  style: poppinsRegular.copyWith(color: Colors.grey, fontSize: 16),),
     ));
   }
 
-  static void showDeleteDialog(String? title, String? subTitle, String? confirmBtn, BuildContext context, {VoidCallback? onTap}){
-    Get.dialog( AlertDialog(
-        alignment: Alignment.center,
-        backgroundColor: Colors.white,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        actionsAlignment: MainAxisAlignment.spaceBetween,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      onTap: () => Get.back(),
-                      child: Container(
-                        height: 40,
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            border: Border.all( color: Theme.of(context).primaryColor),
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Text('Cancel'.tr,
-                          style: poppinsRegular.copyWith(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: Dimensions.fontSizeDefault),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      )),
-                  const SizedBox(width: 20,),
-                  InkWell(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      onTap: onTap,
-                      child: Container(
-                        height: 40,
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Text(
-                          confirmBtn ?? "Log Out".tr,
-                          style: poppinsRegular.copyWith(
-                              color: Theme.of(context).colorScheme.whiteColor,
-                              fontSize:
-                              Dimensions.fontSizeDefault),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      )
-                  )
-                ]),
-          )
-        ],
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
-        title: Text( title ?? 'Log Out'.tr, style: poppinsRegular.copyWith(
-            color: Theme.of(context).colorScheme.textColor,
-            fontSize: 28),
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,),
-        content:  Text( subTitle ?? 'Are you sure you want to logout?'.tr,
-          style: poppinsRegular.copyWith(
-              color: Theme.of(context).colorScheme.textColor,
-              fontSize:
-              Dimensions.fontSizeLarge),
-          overflow: TextOverflow.ellipsis,
-          maxLines: 2,
-        )
-    ));
-  }
 }

@@ -1,11 +1,9 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:vehicle_rental_app/common/data/datasource/remote/exception.dart';
 import 'package:vehicle_rental_app/util/key.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:http/http.dart' as http;
@@ -70,30 +68,6 @@ class ApiClient extends GetxService {
     }
   }
 
-  Future<Response> postMultipartData(String uri, Map<String, String> body, List<MultipartBody> multipartBody, {Map<String, String>? headers}) async {
-    try {
-      if(foundation.kDebugMode) {
-        debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
-        debugPrint('====> API Body: $body with ${multipartBody.length} picture');
-      }
-      http.MultipartRequest dataRequest = http.MultipartRequest('POST', Uri.parse(appBaseUrl+uri));
-      dataRequest.headers.addAll(headers ?? _mainHeaders!);
-      for(MultipartBody multipart in multipartBody) {
-        if(multipart.file != null) {
-          Uint8List dataList = await multipart.file!.readAsBytes();
-          dataRequest.files.add(http.MultipartFile(
-            multipart.key ?? '', multipart.file!.readAsBytes().asStream(), dataList.length,
-            filename: '${DateTime.now().toString()}.png',
-          ));
-        }
-      }
-      dataRequest.fields.addAll(body);
-      http.Response remoteResponse = await http.Response.fromStream(await dataRequest.send());
-      return handleResponse(remoteResponse, uri);
-    } catch (e) {
-      return const Response(statusCode: 1, statusText: noInternetMessage);
-    }
-  }
 
   Future<Response> putData(String uri, dynamic body, {Map<String, String>? headers}) async {
     try {
@@ -156,10 +130,4 @@ class ApiClient extends GetxService {
     }
     return remoteResponse;
   }
-}
-
-class MultipartBody {
-  String? key;
-  XFile? file;
-  MultipartBody(this.key, this.file);
 }

@@ -24,8 +24,4 @@ class NetworkConnectivityObserver{
       return true;
     }
   }
-
-// void dispose(){
-//   _controller.close();
-// }
 }

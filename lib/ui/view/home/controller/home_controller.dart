@@ -1,5 +1,6 @@
-import 'dart:convert';
-
+import 'package:geocoding/geocoding.dart';
+import 'package:objectbox/objectbox.dart';
+import 'package:vehicle_rental_app/core/data/entity/vehicle_entity.dart';
 import 'package:vehicle_rental_app/helper/ui_helper/overlay_helper.dart';
 import 'package:vehicle_rental_app/ui/view/home/data/repo/home_repo.dart';
 import 'package:vehicle_rental_app/ui/view/home/data/response/vehicle_model.dart';
@@ -11,7 +12,11 @@ import 'package:get/get.dart';
 
 class HomeController extends GetxController  implements GetxService {
   final HomeRepo homeRepo;
-  HomeController({required this.homeRepo});
+  late final Store store;
+  late final Box<VehicleEntity> vehicleBox;
+  HomeController(this.store, {required this.homeRepo}) {
+    vehicleBox = store.box<VehicleEntity>();
+  }
 
 
   PageController _pageController = PageController();
@@ -68,17 +73,52 @@ class HomeController extends GetxController  implements GetxService {
 
 
   /// vehicle api call
-  List<VehicleModel> _vehicleList = [];
-  List<VehicleModel> get vehicleList => _vehicleList;
+  List<VehicleEntity> _vehicleList = [];
+  List<VehicleEntity> get vehicleList => _vehicleList;
 
   bool _isVehicleEmpty = true;
   bool get isVehicleEmpty => _isVehicleEmpty;
 
   Future<void> getVehicleList(bool reload) async {
+    if (vehicleBox.count() > 0) {
+      _vehicleList = vehicleBox.getAll();
+      _isVehicleEmpty = false;
+      update();
+      return;
+    }
+
     Response response = await homeRepo.getVehicleList();
 
     if (response.statusCode == 200) {
-      _vehicleList = (response.body as List).map((item) => VehicleModel.fromJson(item)).toList();
+      _vehicleList = (response.body as List).map((item) => VehicleEntity.fromJson(item)).toList();
+
+      // Cache in ObjectBox
+      vehicleBox.removeAll();
+      vehicleBox.putMany(_vehicleList);
+
+    } else {
+      debugPrint('API error');
+    }
+
+    _isVehicleEmpty = false;
+    update();
+  }
+
+
+  void clearVehicleCache() {
+    vehicleBox.removeAll();
+  }
+
+
+  /// vehicle api call
+  VehicleEntity? _vehicleDetails;
+  VehicleEntity? get vehicleDetails => _vehicleDetails;
+
+  Future<void> getVehicleDetails(String carId) async {
+    _vehicleDetails = null;
+    Response response = await homeRepo.getVehicleDetails(carId);
+    if (response.statusCode == 200) {
+      _vehicleDetails = VehicleEntity.fromJson(response.body);
     } else {
       debugPrint('API error');
     }
@@ -87,6 +127,30 @@ class HomeController extends GetxController  implements GetxService {
   }
 
 
+
+
+  Future<String> getAddressFromLatLng(double lat, double lng, bool isShort) async {
+    String address = '';
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        if(isShort){
+          address = '${place.administrativeArea}';
+        }else{
+          address = '${place.street}, ${place.locality}, ${place.postalCode}, ${place.administrativeArea}, ${place.country}';
+        }
+       // address = '${place.street}, ${place.locality}, ${place.postalCode}, ${place.country}';
+       // print('location:: ${place.street}, ${place.locality}, ${place.postalCode}, ${place.country}');
+        return address;
+      }else{
+        return address;
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    return address;
+  }
 
 
 

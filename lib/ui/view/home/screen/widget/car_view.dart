@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vehicle_rental_app/core/data/entity/vehicle_entity.dart';
 import 'package:vehicle_rental_app/service/themes/color_scheme.dart';
 import 'package:vehicle_rental_app/ui/component/custom_image.dart';
-import 'package:vehicle_rental_app/ui/view/home/data/response/vehicle_model.dart';
-import 'package:vehicle_rental_app/ui/view/home/screen/car_details_screen.dart';
+import 'package:vehicle_rental_app/ui/view/home/screen/vehicle_details_screen.dart';
+import 'package:vehicle_rental_app/ui/view/home/screen/widget/location_helper.dart';
 import 'package:vehicle_rental_app/util/styles.dart';
 
+import '../../data/response/vehicle_model.dart';
+
 class CarView extends StatelessWidget {
-  final VehicleModel vehicle;
+  final VehicleEntity vehicle;
   const CarView({super.key, required this.vehicle});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: ()=> Get.to(CarDetailsScreen(vehicleModel: vehicle)),
+      onTap: ()=> Get.to(DetailsPage(vehicleModel: vehicle, isRotated: true)),
       child: Container(
         decoration: BoxDecoration(
             color: Colors.white,
@@ -25,13 +28,17 @@ class CarView extends StatelessWidget {
           children: [
             // Vehicle Image
             Hero(
-              tag: vehicle.hashCode ?? '0',
+              tag: vehicle.hashCode,
               child: ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-                child: CustomImage(
-                 imageUrl: vehicle.image ?? '',
-                  height: 130,
-                  width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CustomImage(
+                   imageUrl: vehicle.image ?? '',
+                    height: 130,
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),
@@ -81,7 +88,7 @@ class CarView extends StatelessWidget {
                    children: [
                      const Icon(Icons.attach_money, size: 20),
                      const SizedBox(width: 8),
-                     Text('Cost: \$${vehicle.costPerMinute?.toStringAsFixed(2) ?? '0.00'} / min', style: poppinsRegular.copyWith(color: Theme.of(context).colorScheme.textColor, fontSize: 12),),
+                     Text('Cost: \$${vehicle.costPerMinute?.toStringAsFixed(2) ?? '0.00'} / day', style: poppinsRegular.copyWith(color: Theme.of(context).colorScheme.textColor, fontSize: 12),),
                    ],
                  ),
                  const SizedBox(height: 8),
@@ -91,10 +98,7 @@ class CarView extends StatelessWidget {
                    children: [
                      Icon(Icons.location_on, size: 20, color: Theme.of(context).primaryColor,),
                      const SizedBox(width: 8),
-                     Text(
-                         '${vehicle.location?.lat ?? 0}-${vehicle.location?.lng ?? 0}',
-                         style: poppinsRegular.copyWith(color: Theme.of(context).colorScheme.textColor, fontSize: 12)
-                     ),
+                     LocationName(vehicleModel: vehicle, textStyle: poppinsRegular.copyWith(color: Theme.of(context).colorScheme.textColor, fontSize: 12))
                    ],
                  ),
                ],

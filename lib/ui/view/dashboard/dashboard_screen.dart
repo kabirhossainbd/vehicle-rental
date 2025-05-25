@@ -1,12 +1,19 @@
 import 'dart:async';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vehicle_rental_app/routes.dart';
 import 'package:vehicle_rental_app/service/network_service.dart';
 import 'package:vehicle_rental_app/service/themes/color_scheme.dart';
 import 'package:vehicle_rental_app/ui/component/custom_toast.dart';
+import 'package:vehicle_rental_app/ui/view/auth/controller/auth_controller.dart';
 import 'package:vehicle_rental_app/ui/view/home/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:vehicle_rental_app/ui/view/profile/controller/profile_controller.dart';
+import 'package:vehicle_rental_app/util/dimensions.dart';
+import 'package:vehicle_rental_app/util/images.dart';
+import 'package:vehicle_rental_app/util/styles.dart';
 
 
 class DashboardScreen extends StatefulWidget {
@@ -26,16 +33,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void initState() {
-
+    Get.find<ProfileController>().getProfile(Get.find<AuthController>().getUserId());
     Get.find<HomeController>().initPageController(widget.pageIndex);
     _observer.checkInternetStatus().then((isInternet){
       Get.find<HomeController>().setIsNetworkConnected(isInternet, context);
     });
 
     _observer.connectivityStream.listen((event) {
+      if(!mounted) return;
       Get.find<HomeController>().setIsNetworkConnected(event, context);
       if(event){
-        // Get.find<PostActivityController>().getAllActivities();
+        Get.find<HomeController>().getVehicleList(true);
+        Get.find<ProfileController>().getProfile(Get.find<AuthController>().getUserId());
       }
     });
     super.initState();
@@ -73,14 +82,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Scaffold(
               key: _scaffoldKey,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              appBar: home.pageIndex == 0 ? null : AppBar(
+              appBar: AppBar(
                 elevation: 1,
                 systemOverlayStyle: SystemUiOverlayStyle(
                   statusBarColor: Colors.transparent,
                   statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
                   statusBarBrightness: Brightness.light, // For iOS (dark icons)
                 ),
-                title: Text(home.pageIndex == 1 ? 'All Messages': home.screen[home.pageIndex].name!.tr, style: TextStyle(color: Theme.of(context).colorScheme.textColor),),
+                title: Image.asset(AllImages.rentalLogo, height: 200, width: 160),
+                actions: [
+                  if(home.pageIndex == 1)...[
+                    IconButton(onPressed: (){
+                      _customLogout(context);
+                    }, icon: Icon(Icons.logout, color: Theme.of(context).primaryColor, size: 24,)),
+                    SizedBox(width: 12.w)
+                  ]
+                ],
               ),
               body: PageView.builder(
                 controller: home.pageController,
@@ -122,6 +139,105 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
     );
+  }
+
+  _customLogout(BuildContext context) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionBuilder: (context, a1, a2, widget) {
+          return Transform.scale(
+            scale: a1.value,
+            child: Opacity(
+              opacity: a1.value,
+              child: AlertDialog(
+                  alignment: Alignment.center,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  actionsAlignment: MainAxisAlignment.spaceBetween,
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10, bottom: 10, left: 10),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                focusColor: Colors.transparent,
+                                onTap: () => Get.back(),
+                                child: Container(
+                                  height: 40,
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      border: Border.all( color: Theme.of(context).primaryColor),
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: Text('Cancel'.tr,
+                                    style: poppinsRegular.copyWith(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: Dimensions.fontSizeDefault),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                )),
+                            const SizedBox(width: 20,),
+                            InkWell(
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                focusColor: Colors.transparent,
+                                onTap: (){
+                                  Get.find<AuthController>().clearSharedData().then((value){
+                                    Get.offAllNamed(RouterHelper.loginScreen);
+                                  });
+                                },
+                                child: Container(
+                                  height: 40,
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: Text(
+                                    "Log Out".tr,
+                                    style: poppinsRegular.copyWith(
+                                        color: Theme.of(context).colorScheme.whiteColor,
+                                        fontSize:
+                                        Dimensions.fontSizeDefault),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                )
+                            )
+                          ]),
+                    )
+                  ],
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                  title: Text('Log Out'.tr, style: poppinsRegular.copyWith(
+                      color: Theme.of(context).colorScheme.textColor,
+                      fontSize: 28),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,),
+                  content:  Text( 'Are you sure you want to logout?'.tr,
+                    style: poppinsRegular.copyWith(
+                        color: Theme.of(context).colorScheme.textColor,
+                        fontSize:
+                        Dimensions.fontSizeLarge),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  )
+              ),
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {
+          return const SizedBox();
+        });
   }
 }
 

@@ -52,40 +52,108 @@ class HomeShimmer extends StatelessWidget {
 
 
 
-class ListItemShimmer extends StatelessWidget {
+class DetailsShimmer extends StatelessWidget {
   final bool isEnabled;
-  final double? height, width;
-  const ListItemShimmer({super.key, required this.isEnabled, this.height, this.width});
+  const DetailsShimmer({super.key, required this.isEnabled});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 150,
-      height: 100,
-      margin: EdgeInsets.symmetric(horizontal: 8.h),
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Shimmer(
-        duration: const Duration(seconds: 2),
-        enabled: isEnabled,
-        child: Column(children: [
-          const SizedBox(height: 4),
-          Container(
-            height: 100, width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(12)
-            ),
-          ),
-          const SizedBox(height: Dimensions.paddingSizeExtraSmall),
-          Container(height: 15, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[300]),),
-          const SizedBox(height: 4),
-          Container(height: 15, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[300]),),
-          const SizedBox(height: 10),
-        ]),
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.symmetric(horizontal: 8.h),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+        decoration: BoxDecoration(
+         // color: Theme.of(context).primaryColor.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Shimmer(
+          duration: const Duration(seconds: 2),
+          enabled: isEnabled,
+          child:Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 4),
+                Container(
+                  height: 240, width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(12)
+                  ),
+                ),
+                const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+                Container(height: 20, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[300]),),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(child: Container(height: 15, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[300]),)),
+                    const SizedBox(width: 16),
+                    Expanded(child: Container(height: 15, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[300]),)),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Container(height: 20, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[300]),),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(child: Container(height: 15, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[300]),)),
+                    const SizedBox(width: 16),
+                    Expanded(child: Container(height: 15, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[300]),)),
+                    const SizedBox(width: 16),
+                    Expanded(child: Container(height: 15, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[300]),)),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Container(height: 14, width: 150, decoration: BoxDecoration(color: Colors.grey[300]),),
+                const SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(height: 20, width: 120, decoration: BoxDecoration(color: Colors.grey[300]),),
+                    const SizedBox(width: 16),
+                    Container(height: 15, width: 50, decoration: BoxDecoration(color: Colors.grey[300]),),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(height: 70, width: 70, decoration: BoxDecoration(color: Colors.grey[300]),),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(height: 15, width: 250, decoration: BoxDecoration(color: Colors.grey[300]),),
+                          const SizedBox(height: 5),
+                          Container(height: 15, width: 200, decoration: BoxDecoration(color: Colors.grey[300]),),
+                          const SizedBox(height: 5),
+                          Container(height: 15, width: 150, decoration: BoxDecoration(color: Colors.grey[300]),),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(child: Container(height: 160, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[300]),)),
+                    const SizedBox(width: 16),
+                    Expanded(child: Container(height: 160, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[300]),)),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(child: Container(height: 160, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[300]),)),
+                    const SizedBox(width: 16),
+                    Expanded(child: Container(height: 160, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[300]),)),
+                  ],
+                ),
+              ]),
+        ),
       ),
     );
   }

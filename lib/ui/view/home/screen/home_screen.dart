@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
-import 'package:vehicle_rental_app/ui/component/custom_appbar.dart';
 import 'package:vehicle_rental_app/ui/component/home_shimmer.dart';
 import 'package:vehicle_rental_app/ui/component/no_data_screen.dart';
 import 'package:vehicle_rental_app/ui/view/home/controller/home_controller.dart';
@@ -27,7 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       builder: (home) => Scaffold(
-        appBar: CustomAppbar(title: 'Vehicle Rental',),
         body: SafeArea(
           child: Column(
             children: [
@@ -48,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisCount: 2,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
-                        padding:  EdgeInsets.fromLTRB(16.w,5.h, 16.w, 24.h),
+                        padding:  EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
                         itemCount: home.vehicleList.length,
                         itemBuilder: (context, idx) => CarView(vehicle: home.vehicleList[idx]),
                         staggeredTileBuilder: (index) => StaggeredTile.fit(1)

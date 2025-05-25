@@ -24,7 +24,7 @@ class AppTheme {
       textTheme: ThemeData.light().textTheme.apply(
         fontFamily: fontFamily,
       ),
-      primaryColor: const Color(0xff408990),
+      primaryColor: const Color(0xff3b22a1),
       primaryTextTheme: ThemeData.light().primaryTextTheme.apply(
         fontFamily: fontFamily,
       ),
@@ -38,22 +38,22 @@ class AppTheme {
         // Added this
 
         prefixStyle: TextStyle(
-          color: Color(0xff408990),
+          color: Color(0xff3b22a1),
         ),
 
-        iconColor: Color(0xff408990),
+        iconColor: Color(0xff3b22a1),
 
         suffixStyle: TextStyle(
-          color: Color(0xff408990),
+          color: Color(0xff3b22a1),
         ),
 
         contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         border: OutlineInputBorder(
-          borderSide: BorderSide(color: Color(0xff408990)),
+          borderSide: BorderSide(color: Color(0xff3b22a1)),
           borderRadius: BorderRadius.all(Radius.circular(45)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Color(0xff408990)),
+          borderSide: BorderSide(color: Color(0xff3b22a1)),
           borderRadius: BorderRadius.all(Radius.circular(45)),
         ),
         errorBorder: OutlineInputBorder(
@@ -82,7 +82,7 @@ class AppTheme {
       textTheme: ThemeData.light().textTheme.apply(
         fontFamily: fontFamily,
       ),
-      primaryColor: const Color(0xff408990),
+      primaryColor: const Color(0xff3b22a1),
       primaryTextTheme: ThemeData.light().textTheme.apply(
         fontFamily: fontFamily,
       ),

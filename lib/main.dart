@@ -5,12 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:vehicle_rental_app/routes.dart';
-import 'package:vehicle_rental_app/service/localization/local_string.dart';
 import 'package:vehicle_rental_app/service/themes/app_theme.dart';
 import 'package:vehicle_rental_app/ui/view/auth/controller/auth_controller.dart';
 import 'package:vehicle_rental_app/util/key.dart';
-import 'core/controller/localization_controller.dart';
-import 'core/controller/theme_controller.dart';
 import 'locator.dart' as di;
 
 late Size mq;
@@ -42,35 +39,27 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context).size;
-    return GetBuilder<ThemeController>(builder: (theme) {
-      return GetBuilder<LocalizationController>(builder: (local) {
-        return GetBuilder<AuthController>(
-          builder: (auth) => ScreenUtilInit(
-            designSize: const Size(360, 690),
-            minTextAdapt: true,
-            splitScreenMode: true,
-            builder: (_, child) => GetMaterialApp(
-              // translations: Languages(),
-              locale: local.locale,
-              // locale: Get.deviceLocale,
-              translations: LocaleString(localString: widget.localString),
-              // fallbackLocale: Locale(AppConstants.languages[0].languageCode, AppConstants.languages[0].countryCode),
-              fallbackLocale: const Locale('en', 'US'),
-              title: ShareKey.appName,
-              initialRoute: RouterHelper.loginScreen,
-              defaultTransition: Transition.topLevel,
-              transitionDuration: const Duration(milliseconds: 500),
-              getPages: RouterHelper.routes,
-              navigatorKey: Get.key,
-              theme: AppTheme.theme,
-              darkTheme: AppTheme.darkTheme,
-              themeMode: theme.themeMode,
-              debugShowCheckedModeBanner: false,
-            ),
-          ),
-        );
-      });
-    });
+    return GetBuilder<AuthController>(
+      builder: (auth) => ScreenUtilInit(
+        designSize: const Size(360, 690),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (_, child) => GetMaterialApp(
+          locale: const Locale('en', 'US'),
+          fallbackLocale: const Locale('en', 'US'),
+          title: ShareKey.appName,
+          initialRoute: auth.isLoggedIn() ? RouterHelper.main : RouterHelper.loginScreen,
+          defaultTransition: Transition.topLevel,
+          transitionDuration: const Duration(milliseconds: 500),
+          getPages: RouterHelper.routes,
+          navigatorKey: Get.key,
+          theme: AppTheme.theme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeMode.light,
+          debugShowCheckedModeBanner: false,
+        ),
+      ),
+    );
   }
 }
 
