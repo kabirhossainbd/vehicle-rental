@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:vehicle_rental_app/core/data/entity/vehicle_entity.dart';
 import 'package:vehicle_rental_app/service/themes/color_scheme.dart';
 import 'package:vehicle_rental_app/ui/view/home/controller/home_controller.dart';
-import 'package:vehicle_rental_app/ui/view/home/data/response/vehicle_model.dart';
 import 'package:vehicle_rental_app/util/styles.dart';
 
 class LocationName extends StatelessWidget {

@@ -3,7 +3,6 @@ import 'package:objectbox/objectbox.dart';
 import 'package:vehicle_rental_app/core/data/entity/vehicle_entity.dart';
 import 'package:vehicle_rental_app/helper/ui_helper/overlay_helper.dart';
 import 'package:vehicle_rental_app/ui/view/home/data/repo/home_repo.dart';
-import 'package:vehicle_rental_app/ui/view/home/data/response/vehicle_model.dart';
 import 'package:vehicle_rental_app/ui/view/home/screen/home_screen.dart';
 import 'package:vehicle_rental_app/ui/view/profile/screen/profile_screen.dart';
 import 'package:vehicle_rental_app/util/images.dart';

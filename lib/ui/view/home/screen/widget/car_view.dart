@@ -7,7 +7,6 @@ import 'package:vehicle_rental_app/ui/view/home/screen/vehicle_details_screen.da
 import 'package:vehicle_rental_app/ui/view/home/screen/widget/location_helper.dart';
 import 'package:vehicle_rental_app/util/styles.dart';
 
-import '../../data/response/vehicle_model.dart';
 
 class CarView extends StatelessWidget {
   final VehicleEntity vehicle;
@@ -50,7 +49,7 @@ class CarView extends StatelessWidget {
                children: [
                  // Name and Type
                  Text(
-                   '${vehicle.name ?? ''} (${vehicle.type?.toUpperCase() ?? ''})',
+                   '${vehicle.name} (${vehicle.type.toUpperCase()})',
                    style: poppinsSemiBold.copyWith(color: Theme.of(context).colorScheme.textColor, fontSize: 16),
                  ),
                  const SizedBox(height: 5),

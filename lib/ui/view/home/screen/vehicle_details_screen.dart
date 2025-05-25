@@ -5,7 +5,6 @@ import 'package:vehicle_rental_app/core/data/entity/vehicle_entity.dart';
 import 'package:vehicle_rental_app/service/themes/color_scheme.dart';
 import 'package:vehicle_rental_app/ui/component/custom_image.dart';
 import 'package:vehicle_rental_app/ui/component/custom_toast.dart';
-import 'package:vehicle_rental_app/ui/view/home/data/response/vehicle_model.dart';
 import 'package:vehicle_rental_app/ui/view/home/screen/widget/location_helper.dart';
 import 'package:vehicle_rental_app/util/styles.dart';
 
@@ -114,7 +113,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         children: [
                           Expanded(
                             child: Text(
-                              widget.vehicleModel.name ?? '',
+                              widget.vehicleModel.name,
                               textAlign: TextAlign.left,
                               style: poppinsRegular.copyWith(
                                 color: const Color(0xff3b22a1),
