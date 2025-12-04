@@ -76,7 +76,7 @@ class CarView extends StatelessWidget {
                  Row(
                    children: [
                      const Icon(Icons.battery_charging_full, size: 20, color: Colors.orangeAccent,),
-                     const SizedBox(width: 8),
+                     const SizedBox(width: 4),
                      Text('Battery: ${vehicle.battery ?? 0}%', style: poppinsRegular.copyWith(color: Theme.of(context).colorScheme.textColor, fontSize: 12),),
                    ],
                  ),
@@ -86,8 +86,8 @@ class CarView extends StatelessWidget {
                  Row(
                    children: [
                      const Icon(Icons.attach_money, size: 20),
-                     const SizedBox(width: 8),
-                     Text('Cost: \$${vehicle.costPerMinute?.toStringAsFixed(2) ?? '0.00'} / day', style: poppinsRegular.copyWith(color: Theme.of(context).colorScheme.textColor, fontSize: 12),),
+                     const SizedBox(width: 4),
+                     Text('Cost: \$${vehicle.costPerMinute?.toStringAsFixed(2) ?? '0.00'} /day', style: poppinsRegular.copyWith(color: Theme.of(context).colorScheme.textColor, fontSize: 12),),
                    ],
                  ),
                  const SizedBox(height: 8),
@@ -96,7 +96,7 @@ class CarView extends StatelessWidget {
                  Row(
                    children: [
                      Icon(Icons.location_on, size: 20, color: Theme.of(context).primaryColor,),
-                     const SizedBox(width: 8),
+                     const SizedBox(width: 4),
                      LocationName(vehicleModel: vehicle, textStyle: poppinsRegular.copyWith(color: Theme.of(context).colorScheme.textColor, fontSize: 12))
                    ],
                  ),
